@@ -1,0 +1,98 @@
+//NETWORK 1
+LD     I0.0
+AD     T45
+TON    T37, 20
+//NETWORK 2
+LD     I0.0
+AN     T37
+=      Q0.0
+=      Q0.1
+//NETWORK 3
+LD     T37
+TON    T38, 20
+//NETWORK 4
+LD     T37
+AD     T38
+=      Q0.6
+=      Q0.0
+=      Q0.4
+=      Q0.3
+=      Q0.2
+//NETWORK 5
+LD     T38
+TON    T39, 20
+//NETWORK 6
+LD     T38
+AD     T39
+=      Q0.6
+=      Q0.0
+=      Q0.4
+=      Q0.1
+=      Q0.2
+//NETWORK 7
+LD     T39
+TON    T40, 20
+//NETWORK 8
+LD     T39
+AD     T40
+=      Q0.0
+=      Q0.4
+=      Q0.1
+=      Q0.5
+//NETWORK 9
+LD     T40
+TON    T41, 20
+//NETWORK 10
+LD     T40
+AD     T41
+=      Q0.6
+=      Q0.5
+=      Q0.4
+=      Q0.1
+=      Q0.2
+//NETWORK 11
+LD     T41
+TON    T42, 20
+//NETWORK 12
+LD     T41
+AD     T42
+=      Q0.6
+=      Q0.5
+=      Q0.4
+=      Q0.1
+=      Q0.2
+=      Q0.3
+//NETWORK 13
+LD     T42
+TON    T43, 20
+//NETWORK 14
+LD     T42
+AD     T43
+=      Q0.0
+=      Q0.1
+=      Q0.6
+//NETWORK 15
+LD     T43
+TON    T44, 20
+//NETWORK 16
+LD     T43
+AD     T44
+=      Q0.0
+=      Q0.1
+=      Q0.2
+=      Q0.3
+=      Q0.4
+=      Q0.5
+=      Q0.6
+//NETWORK 17
+LD     T44
+TON    T45, 20
+//NETWORK 18
+LD     T44
+AD     T45
+=      Q0.0
+=      Q0.1
+=      Q0.2
+=      Q0.4
+=      Q0.5
+=      Q0.6
