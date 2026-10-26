@@ -1,5 +1,5 @@
 //NETWORK 0
-LD     IO.O
+LD     I0.0
 O      Q0.7
 AN     I0.1
 =      Q0.7
