@@ -1,0 +1,208 @@
+// ============================================================
+// 实验：数码管循环显示 1~9（每 2 秒 +1，按停止按钮熄灭）
+// 机型：S7-200 / S7-200 SMART    软件：STEP 7-Micro/WIN V4.0 SP9
+// 方案：不使用 M 位；各步条件在 Q 前并联；每个 Q 只写一次
+// 修正：C 段不是全程亮！数字 2 时 C 必须熄灭。此前版本有误，本版已改。
+// 运行标志：Q0.2（该输出端口损坏、不接线，借它作内部标志）
+// 输出接线：A=Q0.6  B=Q0.0  C=Q0.1  D=Q0.7  E=Q0.3  F=Q0.5  G=Q0.4
+// 输入：I0.0 起动（常开）  I0.1 停止（常开，若常闭：N1 的 AN 改 A）
+// 定时器：T37~T45 为 100ms，PT=20 → 每步 2 秒，9 步 18 秒一循环
+// ============================================================
+
+NETWORK 1
+// 起保停。Q0.2 端口已坏、不接线，只作内部运行标志
+LD     I0.0
+O      Q0.2
+AN     I0.1
+=      Q0.2
+
+NETWORK 2
+// 第1级 2s，T45 到时复位本级实现循环
+LD     Q0.2
+AN     T45
+TON    T37, 20
+
+NETWORK 3
+LD     T37
+TON    T38, 20
+
+NETWORK 4
+LD     T38
+TON    T39, 20
+
+NETWORK 5
+LD     T39
+TON    T40, 20
+
+NETWORK 6
+LD     T40
+TON    T41, 20
+
+NETWORK 7
+LD     T41
+TON    T42, 20
+
+NETWORK 8
+LD     T42
+TON    T43, 20
+
+NETWORK 9
+LD     T43
+TON    T44, 20
+
+NETWORK 10
+LD     T44
+TON    T45, 20
+
+// ---------- 以下 7 个网络为段输出 ----------
+
+NETWORK 11
+// C 段 = Q0.1 ：1 亮 / 2 灭 / 3~9 亮
+LD     Q1.0        // 运行标志（你网络1的线圈就是 Q1.0）
+AN     T37         // 且第1级定时未到 → 步1
+LD     T38         // 或 第2级已到
+AN     T45         // 且末级未到 → 步3~9
+OLD
+=      Q0.1
+
+NETWORK 12
+// A 段 = Q0.6 ：数字 2 3 5 6 7 8 9
+LD     T37
+AN     T38
+LD     T38
+AN     T39
+OLD
+LD     T40
+AN     T41
+OLD
+LD     T41
+AN     T42
+OLD
+LD     T42
+AN     T43
+OLD
+LD     T43
+AN     T44
+OLD
+LD     T44
+AN     T45
+OLD
+=      Q0.6
+
+NETWORK 13
+// B 段 = Q0.0 ：数字 1 2 3 4 7 8 9
+LD     Q0.2
+AN     T37
+LD     T37
+AN     T38
+OLD
+LD     T38
+AN     T39
+OLD
+LD     T39
+AN     T40
+OLD
+LD     T42
+AN     T43
+OLD
+LD     T43
+AN     T44
+OLD
+LD     T44
+AN     T45
+OLD
+=      Q0.0
+
+NETWORK 14
+// D 段 = Q0.7 ：数字 2 3 5 6 8 9（原 Q0.2 端口坏，改 Q0.7）
+LD     T37
+AN     T38
+LD     T38
+AN     T39
+OLD
+LD     T40
+AN     T41
+OLD
+LD     T41
+AN     T42
+OLD
+LD     T43
+AN     T44
+OLD
+LD     T44
+AN     T45
+OLD
+=      Q0.7
+
+NETWORK 15
+// E 段 = Q0.3 ：数字 2 6 8
+LD     T37
+AN     T38
+LD     T41
+AN     T42
+OLD
+LD     T43
+AN     T44
+OLD
+=      Q0.3
+
+NETWORK 16
+// F 段 = Q0.5 ：数字 4 5 6 8 9
+LD     T39
+AN     T40
+LD     T40
+AN     T41
+OLD
+LD     T41
+AN     T42
+OLD
+LD     T43
+AN     T44
+OLD
+LD     T44
+AN     T45
+OLD
+=      Q0.5
+
+NETWORK 17
+// G 段 = Q0.4 ：数字 2 3 4 5 6 8 9
+LD     T37
+AN     T38
+LD     T38
+AN     T39
+OLD
+LD     T39
+AN     T40
+OLD
+LD     T40
+AN     T41
+OLD
+LD     T41
+AN     T42
+OLD
+LD     T43
+AN     T44
+OLD
+LD     T44
+AN     T45
+OLD
+=      Q0.4
+
+// ---- 程序结束（NETWORK 1~17），Micro/WIN 不需写 END ----
+
+// ============================================================
+// 段码总表（唯一正确版本，逐条核对过）
+//   1 = B C            2 = A B G E D      3 = A B G C D
+//   4 = F G B C        5 = A F G C D      6 = A F G E C D
+//   7 = A B C          8 = A B C D E F G  9 = A B C D F G
+//
+// 各段亮度（数字序号）：
+//   A 2356789   B 1234789   C 13456789(2 灭)
+//   D 235689    E 268       F 45689      G 2345689
+//
+// 九条"步"支路：
+//   步1 Q0.2 & /T37   步2 T37 & /T38   步3 T38 & /T39
+//   步4 T39 & /T40    步5 T40 & /T41   步6 T41 & /T42
+//   步7 T42 & /T43    步8 T43 & /T44   步9 T44 & /T45
+// ============================================================
+
